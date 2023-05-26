@@ -60,6 +60,11 @@ pub struct GraphResponse<UserResponse: UserResponseTrait, NodeData: NodeDataTrai
     pub cursor_in_editor: bool,
     /// Is the mouse currently hovering the node finder?
     pub cursor_in_finder: bool,
+
+    /// Bound of each node
+    pub node_rects: NodeRects,
+    /// Position of all ports
+    pub port_locations: PortLocations,
 }
 impl<UserResponse: UserResponseTrait, NodeData: NodeDataTrait> Default
     for GraphResponse<UserResponse, NodeData>
@@ -69,6 +74,9 @@ impl<UserResponse: UserResponseTrait, NodeData: NodeDataTrait> Default
             node_responses: Default::default(),
             cursor_in_editor: false,
             cursor_in_finder: false,
+
+            port_locations: PortLocations::new(),
+            node_rects: NodeRects::new(),
         }
     }
 }
@@ -383,10 +391,10 @@ where
             );
 
             self.selected_nodes = node_rects
-                .into_iter()
+                .iter()
                 .filter_map(|(node_id, rect)| {
-                    if selection_rect.intersects(rect) {
-                        Some(node_id)
+                    if selection_rect.intersects(*rect) {
+                        Some(*node_id)
                     } else {
                         None
                     }
@@ -419,8 +427,8 @@ where
             self.pan_zoom.pan += ui.ctx().input(|i| i.pointer.delta());
         }
 
-        // Deselect and deactivate finder if the editor backround is clicked,
-        // *or* if the the mouse clicks off the ui
+        // Deselect and deactivate finder if the editor background is clicked,
+        // *or* if the mouse clicks off the ui
         if click_on_background || (mouse.any_click() && !cursor_in_editor) {
             self.selected_nodes = Vec::new();
             self.node_finder = None;
@@ -437,6 +445,9 @@ where
             node_responses: delayed_responses,
             cursor_in_editor,
             cursor_in_finder,
+
+            node_rects,
+            port_locations,
         }
     }
 }
