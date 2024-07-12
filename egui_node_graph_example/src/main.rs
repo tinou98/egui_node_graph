@@ -14,12 +14,13 @@ fn main() {
         eframe::NativeOptions::default(),
         Box::new(|cc| {
             cc.egui_ctx.set_visuals(Visuals::dark());
+
             #[cfg(feature = "persistence")]
-            {
-                Box::new(NodeGraphExample::new(cc))
-            }
+            let app = Box::new(NodeGraphExample::new(cc));
             #[cfg(not(feature = "persistence"))]
-            Box::<NodeGraphExample>::default()
+            let app = Box::<NodeGraphExample>::default();
+
+            Ok(app)
         }),
     )
     .expect("Failed to run native example");

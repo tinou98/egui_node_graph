@@ -134,6 +134,13 @@ where
                                 for kind in orphan_kinds {
                                     let kind_name = kind.node_finder_label(user_state).to_string();
 
+                                    if !kind_name
+                                        .to_lowercase()
+                                        .contains(self.query.to_lowercase().as_str())
+                                    {
+                                        continue;
+                                    }
+
                                     if ui.selectable_label(false, kind_name).clicked() {
                                         submitted_archetype = Some(kind.clone());
                                     } else if query_submit {
