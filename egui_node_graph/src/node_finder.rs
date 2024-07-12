@@ -92,6 +92,7 @@ where
                     .show(ui, |ui| {
                         ScrollArea::vertical()
                             .max_height(max_height)
+                            .min_scrolled_height(max_height)
                             .show(ui, |ui| {
                                 ui.set_width(scroll_area_width);
                                 for (category, kinds) in categories {
